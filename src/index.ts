@@ -43,4 +43,30 @@ app.post("/send", async (c) => {
 	}
 });
 
+app.post("/home", async (c) => {
+	if (!serialAdapter.ready) {
+		return c.json({ status: "not initialized" }, 500);
+	}
+
+	try {
+		await serialAdapter.write(["G28"]);
+		return c.json({ status: "success" });
+	} catch (error) {
+		return c.json({ status: "error", error: (error as Error).message }, 500);
+	}
+});
+
+app.post("/stop", async (c) => {
+	if (!serialAdapter.ready) {
+		return c.json({ status: "not initialized" }, 500);
+	}
+
+	try {
+		await serialAdapter.write(["M112"]);
+		return c.json({ status: "success" });
+	} catch (error) {
+		return c.json({ status: "error", error: (error as Error).message }, 500);
+	}
+});
+
 serve({ fetch: app.fetch, port: 3123 });
