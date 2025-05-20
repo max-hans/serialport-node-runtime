@@ -1,0 +1,19 @@
+{
+  "name": "runtime",
+  "private": true,
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "tsx": "^4.19.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.14.2",
+    "hono": "^4.7.10",
+    "serialport": "^13.0.0"
+  },
+  "scripts": {
+    "dev": "tsx --env-file=.env src/index.ts"
+  }
+}
