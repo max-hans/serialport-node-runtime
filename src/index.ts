@@ -90,7 +90,6 @@ app.post("/prompt", async (c) => {
 			"M400",
 			"M118 E1 DONE_DRAWING",
 		];
-		console.log(program);
 		await serialAdapter.write(program);
 		return c.json({ status: "success" });
 	} catch (error) {

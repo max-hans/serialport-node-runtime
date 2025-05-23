@@ -252,7 +252,7 @@ export class SerialAdapter extends EventEmitter {
 				if (index !== -1) {
 					this.pendingCommands.splice(index, 1);
 				}
-				reject(new Error(`Command timeout: ${command}`));
+				console.log(`Command timeout: ${command}`);
 			}, this.COMMAND_TIMEOUT);
 
 			const queuedCommand: QueuedCommand = {
@@ -300,7 +300,7 @@ export class SerialAdapter extends EventEmitter {
 			})
 			.filter((cmd) => cmd.length > 0); // Remove empty commands
 
-		console.log("Queueing commands:", cleaned);
+		/* console.log("Queueing commands:", cleaned); */
 
 		// Add commands to queue
 		this.commandQueue.push(...cleaned);
