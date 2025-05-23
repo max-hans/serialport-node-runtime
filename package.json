@@ -9,11 +9,15 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.51.0",
     "@hono/node-server": "^1.14.2",
+    "command-line-args": "^6.0.1",
     "hono": "^4.7.10",
-    "serialport": "^13.0.0"
+    "serialport": "^13.0.0",
+    "ts-command-line-args": "^2.5.1"
   },
   "scripts": {
-    "dev": "tsx --env-file=.env src/index.ts"
+    "dev": "tsx --env-file=.env src/index.ts",
+    "draw": "tsx --env-file=.env src/runner/index.ts"
   }
 }

@@ -74,12 +74,13 @@ export class SerialAdapter extends EventEmitter {
 					throw new Error("Serial port not initialized");
 				}
 
-				const newParser = new ReadlineParser({ delimiter: "\r\n" });
+				const newParser = new ReadlineParser(/* { delimiter: "\r\n" } */);
 				this.parser = newParser;
 				this.serialPort.pipe(this.parser);
 
 				this.parser.on("data", (data: string) => {
 					this.emit("data", data);
+					console.log("data", data);
 				});
 
 				this.ready = true;
@@ -165,7 +166,12 @@ export class SerialAdapter extends EventEmitter {
 			throw new Error("Serial port not initialized");
 		}
 
-		const cleaned = data.map((d) => d.replace(/\r\n/g, "").trim());
+		const cleaned = data.map((d) => {
+			const fragments = d.split(";");
+			return fragments[0].trim();
+		});
+
+		console.log("writing", cleaned);
 		this.serialPort.write(`${cleaned.join("\n")}\n`);
 	}
 }

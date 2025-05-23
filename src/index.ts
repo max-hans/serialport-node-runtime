@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import { SerialAdapter } from "./SerialAdapter";
 import { serve } from "@hono/node-server";
+import { createDrawing } from "./ai";
+
 const vendorId = process.env.VENDOR_ID;
 const productId = process.env.PRODUCT_ID;
 
@@ -12,7 +14,6 @@ const serialAdapter = new SerialAdapter();
 
 const run = async () => {
 	await serialAdapter.init(vendorId, productId);
-
 	await serialAdapter.write(["G28"]);
 };
 
@@ -63,6 +64,34 @@ app.post("/stop", async (c) => {
 
 	try {
 		await serialAdapter.write(["M112"]);
+		return c.json({ status: "success" });
+	} catch (error) {
+		return c.json({ status: "error", error: (error as Error).message }, 500);
+	}
+});
+
+app.post("/prompt", async (c) => {
+	if (!serialAdapter.ready) {
+		return c.json({ status: "not initialized" }, 500);
+	}
+
+	const { prompt } = await c.req.json();
+	const response = await createDrawing(prompt);
+
+	if (!response.drawing.lines) {
+		return c.json({ status: "error", error: "No drawing lines" }, 500);
+	}
+
+	try {
+		const program = [
+			"G0 Z5",
+			...response.drawing.lines,
+			"G0 Z5",
+			"M400",
+			"M118 E1 DONE_DRAWING",
+		];
+		console.log(program);
+		await serialAdapter.write(program);
 		return c.json({ status: "success" });
 	} catch (error) {
 		return c.json({ status: "error", error: (error as Error).message }, 500);
